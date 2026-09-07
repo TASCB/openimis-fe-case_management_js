@@ -1,5 +1,6 @@
 export const MODULE_NAME = 'caseManagement';
 
+export const ROUTE_CASE_DASHBOARD = 'caseManagement/dashboard';
 export const ROUTE_CASE_FOLLOW_UPS = 'caseManagement/followUps';
 export const ROUTE_CASE_PENDING = 'caseManagement/pendingUpdates';
 export const ROUTE_CASE_ACCOUNT_CORRECTIONS = 'caseManagement/accountCorrections';
@@ -20,6 +21,7 @@ export const RIGHT_FOLLOWUP_SEARCH = 290401;
 export const RIGHT_FOLLOWUP_CREATE = 290402;
 export const RIGHT_FOLLOWUP_UPDATE = 290403;
 export const RIGHT_PENDING_SEARCH = 290501;
+export const RIGHT_CASE_SEARCH = 290101;
 export const RIGHT_ACCOUNT_CORRECTION_SEARCH = 290205;
 export const RIGHT_PENDING_DECIDE = 290502;
 

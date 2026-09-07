@@ -209,3 +209,12 @@ export function fetchAccountCorrections(params) {
     ACTION_TYPE.SEARCH_ACCOUNT_CORRECTIONS,
   );
 }
+
+export function fetchCaseSummary() {
+  const payload = `query { caseManagementSummary {
+    openCorrections openFollowUps overdueFollowUps pendingUpdates
+    householdsDeactivated membersDeactivated paymentChanges
+    followUpsByStatus { status count } pendingByStatus { status count }
+  } }`;
+  return graphql(payload, ACTION_TYPE.FETCH_SUMMARY);
+}

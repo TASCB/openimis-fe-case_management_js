@@ -1,12 +1,15 @@
 /* eslint-disable import/prefer-default-export */
 import React from 'react';
-import { Assignment, NotificationImportant, AccountBalanceWallet } from '@material-ui/icons';
+import {
+  Assignment, NotificationImportant, AccountBalanceWallet, Dashboard as DashboardIcon,
+} from '@material-ui/icons';
 import { FormattedMessage } from '@openimis/fe-core';
 import flatten from 'flat';
 
 import messages_en from './translations/en.json';
 import reducer from './reducer';
 import CaseManagementMainMenu from './menu/CaseManagementMainMenu';
+import CaseDashboardPage from './pages/CaseDashboardPage';
 import FollowUpsPage from './pages/FollowUpsPage';
 import PendingUpdatesPage from './pages/PendingUpdatesPage';
 import AccountCorrectionsPage from './pages/AccountCorrectionsPage';
@@ -19,7 +22,8 @@ import MemberDeactivateAction from './components/MemberDeactivateAction';
 import {
   GROUP_TAB_LABEL_CONTRIBUTION_KEY, GROUP_TAB_PANEL_CONTRIBUTION_KEY, MODULE_NAME,
   RIGHT_FOLLOWUP_SEARCH, RIGHT_PENDING_SEARCH, RIGHT_ACCOUNT_CORRECTION_SEARCH,
-  ROUTE_CASE_FOLLOW_UPS, ROUTE_CASE_PENDING, ROUTE_CASE_ACCOUNT_CORRECTIONS,
+  RIGHT_CASE_SEARCH,
+  ROUTE_CASE_DASHBOARD, ROUTE_CASE_FOLLOW_UPS, ROUTE_CASE_PENDING, ROUTE_CASE_ACCOUNT_CORRECTIONS,
   ROUTE_CASE_ACCOUNT_CORRECTION,
 } from './constants';
 
@@ -29,12 +33,14 @@ const DEFAULT_CONFIG = {
   refs: [
     { key: 'caseManagement.route.followUps', ref: ROUTE_CASE_FOLLOW_UPS },
     { key: 'caseManagement.route.pendingUpdates', ref: ROUTE_CASE_PENDING },
+    { key: 'caseManagement.route.dashboard', ref: ROUTE_CASE_DASHBOARD },
     { key: 'caseManagement.route.accountCorrections', ref: ROUTE_CASE_ACCOUNT_CORRECTIONS },
     { key: 'caseManagement.route.accountCorrection', ref: ROUTE_CASE_ACCOUNT_CORRECTION },
   ],
   'core.Router': [
     { path: ROUTE_CASE_FOLLOW_UPS, component: FollowUpsPage },
     { path: ROUTE_CASE_PENDING, component: PendingUpdatesPage },
+    { path: ROUTE_CASE_DASHBOARD, component: CaseDashboardPage },
     { path: ROUTE_CASE_ACCOUNT_CORRECTIONS, component: AccountCorrectionsPage },
     { path: `${ROUTE_CASE_ACCOUNT_CORRECTION}/:account_uuid`,
       component: AccountCorrectionDetailPage },
@@ -46,6 +52,13 @@ const DEFAULT_CONFIG = {
   // Each entry appears only if its `id` is listed as a submenu of CaseManagementMainMenu in the
   // fe-core `menus` config — otherwise fe-core filters it out silently.
   'caseManagement.MainMenu': [
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.dashboard" />,
+      icon: <DashboardIcon />,
+      route: `/${ROUTE_CASE_DASHBOARD}`,
+      filter: (rights) => rights.includes(RIGHT_CASE_SEARCH),
+      id: 'caseManagement.dashboard',
+    },
     {
       text: <FormattedMessage module={MODULE_NAME} id="menu.followUps" />,
       icon: <Assignment />,

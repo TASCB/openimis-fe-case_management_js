@@ -20,6 +20,7 @@ export const ACTION_TYPE = {
   SEARCH_DEACTIVATIONS: 'CASE_DEACTIVATIONS',
   SEARCH_MEMBERS: 'CASE_MEMBERS',
   SEARCH_MEMBER_DEACTIVATIONS: 'CASE_MEMBER_DEACTIVATIONS',
+  FETCH_SUMMARY: 'CASE_SUMMARY',
 };
 
 const initial = {
@@ -90,6 +91,18 @@ function reducer(state = initial, action) {
       return connection(state, 'caseFollowUpRemark', 'followUps', action, SUCCESS);
     case ERROR(ACTION_TYPE.SEARCH_FOLLOW_UPS):
       return connection(state, 'caseFollowUpRemark', 'followUps', action, ERROR);
+
+    case REQUEST(ACTION_TYPE.FETCH_SUMMARY):
+      return { ...state, fetchingSummary: true, fetchedSummary: false, errorSummary: null };
+    case SUCCESS(ACTION_TYPE.FETCH_SUMMARY):
+      return {
+        ...state,
+        fetchingSummary: false,
+        fetchedSummary: true,
+        summary: action.payload.data.caseManagementSummary,
+      };
+    case ERROR(ACTION_TYPE.FETCH_SUMMARY):
+      return { ...state, fetchingSummary: false, errorSummary: formatServerError(action.payload) };
 
     case REQUEST(ACTION_TYPE.SEARCH_ACCOUNT_CORRECTIONS):
 
