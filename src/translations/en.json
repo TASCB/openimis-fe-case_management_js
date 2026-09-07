@@ -1,5 +1,299 @@
 {
-  "menu.caseManagement": "Case Management",
-  "page.title": "Case Management",
-  "placeholder.text": "Case Management module - coming soon"
+  "caseManagement": {
+    "mainMenu": {
+      "caseManagement": "Case Management"
+    },
+    "menu": {
+      "households": "Households",
+      "followUps": "Follow-ups",
+      "pendingUpdates": "Pending updates"
+    },
+    "households": {
+      "pageTitle": "Case Management — Households",
+      "searcherTitle": "{count, plural, one {# household} other {# households}}"
+    },
+    "followUps": {
+      "pageTitle": "Case Management — Follow-ups",
+      "searcherTitle": "{count, plural, one {# follow-up} other {# follow-ups}}"
+    },
+    "pending": {
+      "pageTitle": "Case Management — Pending updates",
+      "searcherTitle": "{count, plural, one {# pending update} other {# pending updates}}",
+      "household": "Household",
+      "type": "Update",
+      "severity": "Severity",
+      "submittedBy": "Submitted by",
+      "date": "Submitted",
+      "summary": "Details"
+    },
+    "household": {
+      "code": "Household",
+      "representative": "Representative",
+      "location": "District",
+      "members": "Members",
+      "account": "Payment account",
+      "status": "Status",
+      "flags": "Attention",
+      "searcherTitle": "{count, plural, one {# household} other {# households}}"
+    },
+    "filter": {
+      "search": "Household code",
+      "hasPendingUpdate": "Has a pending update",
+      "any": "Any"
+    },
+    "flag": {
+      "pending": "Pending update",
+      "followUp": "Open follow-up"
+    },
+    "status": {
+      "deactivated": "Deactivated"
+    },
+    "action": {
+      "editPayment": "Change payment details",
+      "editPhone": "Update contact phone",
+      "deactivate": "Deactivate household",
+      "approve": "Approve",
+      "reject": "Reject",
+      "noAccount": "No payment account registered",
+      "reactivate": "Reactivate household",
+      "deactivateMember": "Deactivate member",
+      "reactivateMember": "Reactivate member (deactivated: {reason})",
+      "reactivateHousehold": "Reactivate household (deactivated: {reason})"
+    },
+    "dialog": {
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "yes": "Yes",
+    "no": "No",
+    "paymentChange": {
+      "title": "Change payment details",
+      "accountNumber": "Account number",
+      "accountName": "Account name",
+      "fspType": "Provider type",
+      "fspName": "Provider",
+      "reasonCode": "Reason",
+      "reasonText": "Explain the change",
+      "materialWarning": "This changes where money is sent. The account must be verified again before the next payment, and an approver must sign it off."
+    },
+    "paymentPhone": {
+      "title": "Update contact phone",
+      "contactPhone": "Contact phone",
+      "info": "The contact phone is used to reach the beneficiary about payments. Changing it does not move where money is sent, so no reason is required."
+    },
+    "deactivation": {
+      "title": "Deactivate household",
+      "mode": "Type",
+      "reasonCode": "Reason",
+      "reasonText": "Explain the deactivation",
+      "effectiveDate": "Effective from",
+      "confirm": "Deactivate",
+      "permanentWarning": "A permanent deactivation requires that no members are still active.",
+      "blockedByMembers": "Deactivate these members first:",
+      "open": "Still deactivated",
+      "effectiveDateLabel": "Effective from",
+      "reason": "Reason",
+      "searcherTitle": "{count, plural, =0 {Never deactivated} one {# deactivation record} other {# deactivation records}}",
+      "previousStatus": "Status before",
+      "deceasedSingleMember": "Deceased applies only to a household with a single member. For a larger household, deactivate the individual members instead.",
+      "needReason": "Choose a reason to continue."
+    },
+    "followUp": {
+      "household": "Household",
+      "category": "Category",
+      "status": "Status",
+      "priority": "Priority",
+      "dueDate": "Due",
+      "assignedTo": "Assigned to",
+      "remark": "Remark",
+      "overdue": "overdue"
+    },
+    "audit": {
+      "date": "When",
+      "changeType": "Change",
+      "material": "Moves money",
+      "reason": "Reason",
+      "channel": "Source",
+      "by": "By",
+      "searcherTitle": "{count, plural, =0 {No payment changes recorded} one {# payment change} other {# payment changes}}"
+    },
+    "tab": {
+      "caseManagement": "Case Management",
+      "paymentAudit": "Payment change history",
+      "followUps": "Follow-ups",
+      "deactivations": "Deactivation history"
+    },
+    "banner": {
+      "pendingUpdates": "{count, plural, one {# update is} other {# updates are}} waiting for a decision{critical, plural, =0 {} other { — # need attention}}."
+    },
+    "mutation": {
+      "updatePayment": "Change payment details",
+      "updatePhone": "Update contact phone",
+      "deactivate": "Deactivate household",
+      "approve": "Approve pending update",
+      "reject": "Reject pending update",
+      "reactivate": "Reactivate household",
+      "deactivateMember": "Deactivate member",
+      "reactivateMember": "Reactivate member"
+    },
+    "mode": {
+      "TEMPORARY": "Temporary",
+      "PERMANENT": "Permanent"
+    },
+    "changeType": {
+      "ACCOUNT_NUMBER": "Account number",
+      "PROVIDER": "Provider",
+      "ACCOUNT_NAME": "Account name",
+      "CONTACT_PHONE": "Contact phone",
+      "PRIMARY_FLAG": "Primary account",
+      "MULTIPLE": "Several fields"
+    },
+    "updateType": {
+      "PAYMENT_CHANGE": "Payment change",
+      "HOUSEHOLD_UPDATE": "Household update",
+      "MEMBER_UPDATE": "Member update",
+      "DEACTIVATION": "Deactivation",
+      "REPRESENTATIVE_CHANGE": "Representative change"
+    },
+    "category": {
+      "PAYMENT_FAILURE": "Payment failure",
+      "ACCOUNT_VERIFICATION": "Account verification",
+      "DATA_QUALITY": "Data quality",
+      "BENEFICIARY_CONTACT": "Beneficiary contact",
+      "OTHER": "Other"
+    },
+    "followUpStatus": {
+      "OPEN": "Open",
+      "IN_PROGRESS": "In progress",
+      "RESOLVED": "Resolved",
+      "ESCALATED": "Escalated",
+      "CANCELLED": "Cancelled"
+    },
+    "reasonCode": {
+      "ACCOUNT_CLOSED": "Account closed",
+      "ACCOUNT_INVALID": "Account details invalid",
+      "FSP_CHANGED": "Changed provider",
+      "BENEFICIARY_REQUEST": "Beneficiary requested",
+      "NAME_MISMATCH": "Name mismatch",
+      "DATA_CORRECTION": "Correcting a data error",
+      "DUPLICATE": "Duplicate registration",
+      "REGISTRATION_ERROR": "Registration error",
+      "OTHER": "Other",
+      "SHIFTED": "Shifted",
+      "GRADUATED": "Graduated",
+      "COMMITTEE_MEMBER": "Committee member",
+      "NOT_ATTENDED_2_CS": "Not attended 2 consecutive CS",
+      "DECEASED": "Deceased"
+    },
+    "state": {
+      "active": "Active",
+      "deactivated": "Deactivated"
+    },
+    "memberDeactivation": {
+      "title": "Deactivate member",
+      "reasonCode": "Reason",
+      "reasonText": "Explain the deactivation",
+      "effectiveDate": "Effective from",
+      "dateOfDeath": "Date of death",
+      "successor": "Successor",
+      "confirm": "Deactivate member",
+      "deceasedWarning": "Recording a death ends this person’s membership in every household they belong to and suspends their benefits. It can be reversed as a single action if recorded in error.",
+      "representativeInfo": "This member represents the household, so a successor must take over the role.",
+      "successorRequired": "A successor is required for each household this member represents.",
+      "searcherTitle": "{count, plural, =0 {No active members} one {# member} other {# members}}",
+      "lastMemberWarning": "This is the household’s only member. Deactivating them leaves the household without a representative — consider deactivating the household instead.",
+      "needReason": "Choose a reason to continue.",
+      "needSuccessor": "Choose the member who will take over as representative.",
+      "needReasonText": "Describe the reason in at least 10 characters."
+    },
+    "member": {
+      "name": "Name",
+      "role": "Role",
+      "recipient": "Recipient",
+      "actions": "Actions"
+    },
+    "confirm": {
+      "deactivate": {
+        "title": "Deactivate this household?",
+        "message": "The household stops receiving payments until it is reactivated. Reason: {reason}.",
+        "permanentMessage": "This is a permanent deactivation for reason {reason}. It is only allowed when no members are still active."
+      },
+      "deactivateMember": {
+        "title": "Deactivate this member?",
+        "message": "{name} will no longer be an active member of this household.",
+        "deceasedMessage": "Recording {name} as deceased ends their membership in EVERY household they belong to and suspends their benefits. It can be reversed as one action if recorded in error.",
+        "personLevelMessage": "{name} will be deactivated in {count, plural, one {# household} other {all # households}} they belong to."
+      },
+      "reactivate": {
+        "title": "Reactivate this household?",
+        "message": "The household returns to its previous status and can be paid again. It was deactivated for: {reason}."
+      },
+      "reactivateMember": {
+        "title": "Reactivate this member?",
+        "message": "{name} becomes an active member of this household again. They were deactivated for: {reason}.",
+        "cascadeMessage": "{name} was recorded as deceased, which ended their membership in every household. Reactivating reverses the whole cascade."
+      }
+    }
+  },
+  "caseManagement.accountCorrection.accountName": "Account name",
+  "caseManagement.accountCorrection.action.back": "Back to list",
+  "caseManagement.accountCorrection.action.editDetails": "Edit payment details",
+  "caseManagement.accountCorrection.action.editPhone": "Update phone",
+  "caseManagement.accountCorrection.attempts.none": "No verification attempts recorded.",
+  "caseManagement.accountCorrection.attempts.reason": "Reason",
+  "caseManagement.accountCorrection.attempts.received": "Received",
+  "caseManagement.accountCorrection.attempts.reference": "MUSE reference",
+  "caseManagement.accountCorrection.attempts.result": "Result",
+  "caseManagement.accountCorrection.attempts.title": "Verification history",
+  "caseManagement.accountCorrection.attempts.type": "Type",
+  "caseManagement.accountCorrection.contactPhone": "Contact phone",
+  "caseManagement.accountCorrection.isPrimary": "Primary account",
+  "caseManagement.accountCorrection.page.title": "Account Correction",
+  "caseManagement.accountCorrection.preAudit": "Pre-audit",
+  "caseManagement.accountCorrections.accountNumber": "Account / phone",
+  "caseManagement.accountCorrections.filter.accountNumber": "Account / phone",
+  "caseManagement.accountCorrections.filter.fsp": "FSP",
+  "caseManagement.accountCorrections.filter.hhid": "Household ID",
+  "caseManagement.accountCorrections.filter.recipient": "Representative",
+  "caseManagement.accountCorrections.fsp": "FSP",
+  "caseManagement.accountCorrections.fspType": "Channel",
+  "caseManagement.accountCorrections.fspType.BANK": "Bank",
+  "caseManagement.accountCorrections.fspType.MOBILE": "Mobile",
+  "caseManagement.accountCorrections.fspType.null": "Any channel",
+  "caseManagement.accountCorrections.hhid": "Household ID",
+  "caseManagement.accountCorrections.location": "Location",
+  "caseManagement.accountCorrections.noName": "(no representative recorded)",
+  "caseManagement.accountCorrections.noReason": "No reason returned",
+  "caseManagement.accountCorrections.page.title": "Account Corrections",
+  "caseManagement.accountCorrections.reason": "Why it failed",
+  "caseManagement.accountCorrections.recipient": "Representative",
+  "caseManagement.accountCorrections.results": "{count} Accounts to Correct",
+  "caseManagement.boolean.no": "No",
+  "caseManagement.boolean.yes": "Yes",
+  "caseManagement.menu.accountCorrections": "Account Corrections",
+  "caseManagement.mutation.updatePayment": "Update payment details",
+  "caseManagement.mutation.updatePhone": "Update contact phone",
+  "caseManagement.paymentChange.title": "Correct payment details",
+  "caseManagement.paymentChange.materialWarning": "This changes where money is sent. The account will be re-verified with MUSE before it can be paid again, and the change needs a second person's approval.",
+  "caseManagement.paymentChange.accountNumber": "Account number (payment is sent here)",
+  "caseManagement.paymentChange.accountNumber.MOBILE": "Mobile money number (payment is sent here)",
+  "caseManagement.paymentChange.accountNumber.BANK": "Bank account number (payment is sent here)",
+  "caseManagement.paymentChange.accountName": "Account name",
+  "caseManagement.paymentChange.fspType": "Channel (BANK or MOBILE)",
+  "caseManagement.paymentChange.fspName": "Provider",
+  "caseManagement.paymentChange.reasonCode": "Reason",
+  "caseManagement.paymentChange.reasonText": "Details",
+  "caseManagement.paymentPhone.title": "Update contact phone",
+  "caseManagement.paymentPhone.info": "A number for reaching the household. It needs no reason and no approval.",
+  "caseManagement.paymentPhone.notPaymentWarning": "This is NOT the number money is sent to and saving it will not re-verify the account. To correct a mobile money number, close this and use Correct payment details instead.",
+  "caseManagement.paymentPhone.contactPhone": "Contact phone — not used for payment",
+  "caseManagement.dialog.cancel": "Cancel",
+  "caseManagement.dialog.save": "Save",
+  "caseManagement.reasonCode.ACCOUNT_CLOSED": "Account closed",
+  "caseManagement.reasonCode.ACCOUNT_INVALID": "Account number wrong or invalid",
+  "caseManagement.reasonCode.FSP_CHANGED": "Beneficiary changed provider",
+  "caseManagement.reasonCode.BENEFICIARY_REQUEST": "Requested by the beneficiary",
+  "caseManagement.reasonCode.NAME_MISMATCH": "Name does not match the account",
+  "caseManagement.reasonCode.DATA_CORRECTION": "Data correction",
+  "caseManagement.reasonCode.OTHER": "Other (explain below)"
 }
