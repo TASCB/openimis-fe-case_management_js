@@ -16,11 +16,7 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   page: { padding: theme.spacing(2) },
-  // 6 columns, so equal-width applies;
-  tables: {
-    '& table': { tableLayout: 'fixed' },
-    '& table th': { whiteSpace: 'nowrap' },
-  },
+  tables: {},
   reason: { color: theme.palette.error.main },
   mono: { fontVariantNumeric: 'tabular-nums' },
   channel: { fontSize: '0.7rem', height: 20 },
