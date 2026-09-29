@@ -15,8 +15,10 @@ const FOLLOW_UP_PROJECTION = () => [
   'assignedTo { id username }', 'group { id code }', 'userCreated { id username }',
 ];
 
+// `changes` is resolved per row (task payload or history); fine at page sizes of 10-100.
 const PENDING_PROJECTION = () => [
   'id', 'uuid', 'updateType', 'status', 'severity', 'summary', 'objectId', 'dateCreated',
+  'isProposal', 'channel', 'changes', 'resolvedAt',
   'submittedBy { id username }', 'group { id code }',
 ];
 
@@ -215,6 +217,7 @@ export function fetchCaseSummary() {
     openCorrections openFollowUps overdueFollowUps pendingUpdates
     householdsDeactivated membersDeactivated paymentChanges
     followUpsByStatus { status count } pendingByStatus { status count }
+    pendingByChannel { channel count }
   } }`;
   return graphql(payload, ACTION_TYPE.FETCH_SUMMARY);
 }

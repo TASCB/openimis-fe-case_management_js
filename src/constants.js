@@ -41,6 +41,13 @@ export const FOLLOW_UP_CATEGORIES = [
 export const PRIORITIES = ['LOW', 'NORMAL', 'HIGH', 'URGENT'];
 
 export const FSP_TYPES = ['BANK', 'MOBILE'];
+export const ACCOUNT_CORRECTION_REASONS = ['VERIFICATION_FAILED', 'INVALID_MOBILE'];
+
+export const PENDING_STATUSES = ['PENDING', 'APPROVED', 'REJECTED', 'CANCELLED', 'SUPERSEDED'];
+export const CHANNELS = ['MOBILE', 'WEB', 'IMPORT', 'SYSTEM'];
+export const SEVERITIES = ['CRITICAL', 'WARNING', 'INFO'];
+// A proposal waits in a task and changes nothing until decided; the rest were already applied.
+export const PENDING_KINDS = ['PROPOSAL', 'APPLIED'];
 
 // Default width for every dialog in this module. Kept in one place so the module
 // stays visually consistent and the size is a single edit, not six.

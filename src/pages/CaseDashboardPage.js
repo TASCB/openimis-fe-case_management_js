@@ -15,6 +15,11 @@ import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import LayersIcon from '@material-ui/icons/Layers';
+import PhoneAndroidIcon from '@material-ui/icons/PhoneAndroid';
+import ComputerIcon from '@material-ui/icons/Computer';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import SettingsIcon from '@material-ui/icons/Settings';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import {
   formatMessage, Helmet, ProgressOrError, useHistory,
 } from '@openimis/fe-core';
@@ -37,6 +42,12 @@ const PENDING_FLOW = [
   ['PENDING', <HourglassEmptyIcon />], ['APPROVED', <ThumbUpAltIcon />],
   ['REJECTED', <HighlightOffIcon />], ['CANCELLED', <BlockIcon />],
   ['SUPERSEDED', <LayersIcon />],
+];
+
+// Open (PENDING) updates only. `null` = recorded before the channel was captured.
+const CHANNEL_FLOW = [
+  ['MOBILE', <PhoneAndroidIcon />], ['WEB', <ComputerIcon />], ['IMPORT', <CloudUploadIcon />],
+  ['SYSTEM', <SettingsIcon />], ['null', <HelpOutlineIcon />],
 ];
 
 const useStyles = makeStyles((theme) => ({ page: theme.page }));
@@ -85,6 +96,13 @@ function CaseDashboardPage() {
     key: code, icon, label: t(`pendingStatus.${code}`), value: pendingCounts[code] ?? 0,
   }));
 
+  const channelCounts = Object.fromEntries(
+    (summary?.pendingByChannel ?? []).map((r) => [r.channel ?? 'null', r.count]),
+  );
+  const channelStages = CHANNEL_FLOW.map(([code, icon]) => ({
+    key: code, icon, label: t(`pending.channel.${code}`), value: channelCounts[code] ?? 0,
+  }));
+
   const caseloadStages = [
     { key: 'changes', icon: <AssignmentIcon />, label: t('dashboard.paymentChanges'), value: summary?.paymentChanges ?? 0 },
     { key: 'households', icon: <BlockIcon />, label: t('dashboard.householdsDeactivated'), value: summary?.householdsDeactivated ?? 0 },
@@ -131,6 +149,12 @@ function CaseDashboardPage() {
           <Box mt={3}>
             <SectionCard title={t('dashboard.pendingUpdatesFlow')} icon={<HourglassEmptyIcon />}>
               <PipelineFlow stages={pendingStages} emptyText={t('dashboard.empty')} maxPerRow={5} />
+            </SectionCard>
+          </Box>
+
+          <Box mt={3}>
+            <SectionCard title={t('dashboard.pendingByChannel')} icon={<PhoneAndroidIcon />}>
+              <PipelineFlow stages={channelStages} emptyText={t('dashboard.empty')} maxPerRow={5} />
             </SectionCard>
           </Box>
 

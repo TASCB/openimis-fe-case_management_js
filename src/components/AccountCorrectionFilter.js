@@ -6,7 +6,9 @@ import {
   ConstantBasedPicker, ControlledField, TextInput, useModulesManager, useTranslations,
 } from '@openimis/fe-core';
 
-import { CASE_DEBOUNCE_TIME, FSP_TYPES, MODULE_NAME } from '../constants';
+import {
+  ACCOUNT_CORRECTION_REASONS, CASE_DEBOUNCE_TIME, FSP_TYPES, MODULE_NAME,
+} from '../constants';
 
 const useStyles = makeStyles((theme) => ({
   form: { padding: '0 0 10px 0', width: '100%' },
@@ -50,6 +52,23 @@ function AccountCorrectionFilter({ filters, onChangeFilters }) {
 
   return (
     <Grid container className={classes.form}>
+      <ControlledField
+        module={MODULE_NAME}
+        id="AccountCorrectionFilter.reason"
+        field={(
+          <Grid item xs={12} sm={6} md={2} className={classes.item}>
+            <ConstantBasedPicker
+              module={MODULE_NAME}
+              label="accountCorrections.reason"
+              constants={ACCOUNT_CORRECTION_REASONS}
+              value={filterValue('reason')}
+              onChange={(value) => onChangeFilters([
+                { id: 'reason', value, filter: value ? `reason: "${value}"` : '' },
+              ])}
+            />
+          </Grid>
+        )}
+      />
       {textField('hhid', 'accountCorrections.filter.hhid')}
       {textField('recipientName', 'accountCorrections.filter.recipient')}
       {textField('fspName', 'accountCorrections.filter.fsp', 'Icontains')}

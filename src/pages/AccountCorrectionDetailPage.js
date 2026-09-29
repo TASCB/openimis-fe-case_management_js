@@ -2,10 +2,11 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
 import {
-  Avatar, Button, Divider, Grid, Paper, Table, TableBody, TableCell, TableHead, TableRow,
-  Typography,
+  Avatar, Button, Divider, Grid, IconButton, Paper, Table, TableBody, TableCell, TableHead, TableRow,
+  Tooltip, Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {
   Error as CoreError, formatMessage, Helmet, journalize, ProgressOrError, TextInput,
 } from '@openimis/fe-core';
@@ -22,7 +23,20 @@ import {
 const useStyles = makeStyles((theme) => ({
   page: theme.page,
   paper: theme.paper.paper,
-  paperHeader: theme.paper.title,
+  // Detached header card, built like fe-core's <Form> header: back chevron, title, actions.
+  header: {
+    ...theme.paper.header,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+  },
+  headerTitle: { display: 'flex', alignItems: 'center', gap: theme.spacing(1) },
+  headerActions: {
+    display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end', marginLeft: 'auto',
+  },
   paperHeaderAction: theme.paper.action,
   item: theme.paper.item,
   tableTitle: theme.table.title,
@@ -86,43 +100,50 @@ function AccountCorrectionDetailPage({ match, history }) {
       {account && (
         <>
           <Paper className={classes.paper}>
-            <Grid container className={classes.paperHeader} alignItems="center">
-              <Grid item xs={5}>
+            <div className={classes.header}>
+              <div className={classes.headerTitle}>
+                <Tooltip title={t('accountCorrection.action.back')}>
+                  <IconButton
+                    onClick={() => (history.length > 1
+                      ? history.goBack()
+                      : history.push(`/${ROUTE_CASE_ACCOUNT_CORRECTIONS}`))}
+                  >
+                    <ChevronLeftIcon />
+                  </IconButton>
+                </Tooltip>
                 <Typography variant="h6">
                   {account.recipientName || t('accountCorrections.noName')}
                 </Typography>
-              </Grid>
-              <Grid item xs={7} className={classes.paperHeaderAction}>
-                <Grid container justifyContent="flex-end" spacing={1}>
-                  <Grid item>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      disabled={!rights.includes(RIGHT_PAYMENT_CHANGE_UPDATE)}
-                      onClick={() => { setError(null); setDialog('payment'); }}
-                    >
-                      {t('accountCorrection.action.editDetails')}
-                    </Button>
-                  </Grid>
-                  <Grid item>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      disabled={!rights.includes(RIGHT_PAYMENT_PHONE_UPDATE)}
-                      onClick={() => { setError(null); setDialog('phone'); }}
-                    >
-                      {t('accountCorrection.action.editPhone')}
-                    </Button>
-                  </Grid>
-                  <Grid item>
-                    <Button onClick={() => history.push(`/${ROUTE_CASE_ACCOUNT_CORRECTIONS}`)}>
-                      {t('accountCorrection.action.back')}
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
+              </div>
+              <div className={classes.headerActions}>
+                <span className={classes.paperHeaderAction}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={!rights.includes(RIGHT_PAYMENT_CHANGE_UPDATE)}
+                    onClick={() => { setError(null); setDialog('payment'); }}
+                  >
+                    {t('accountCorrection.action.editDetails')}
+                  </Button>
+                </span>
+                <span className={classes.paperHeaderAction}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={!rights.includes(RIGHT_PAYMENT_PHONE_UPDATE)}
+                    onClick={() => { setError(null); setDialog('phone'); }}
+                  >
+                    {t('accountCorrection.action.editPhone')}
+                  </Button>
+                </span>
+              </div>
+            </div>
+          </Paper>
 
+          <Paper className={classes.paper}>
+            <Typography className={classes.tableTitle}>
+              {t('accountCorrection.details.title')}
+            </Typography>
             <Divider />
 
             <Grid container className={classes.item}>
