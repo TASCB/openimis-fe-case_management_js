@@ -11,8 +11,8 @@ const AUDIT_PROJECTION = () => [
 
 const FOLLOW_UP_PROJECTION = () => [
   'id', 'uuid', 'category', 'remark', 'status', 'priority', 'dueDate', 'isOverdue',
-  'resolvedAt', 'resolutionNote', 'escalatedAt', 'dateCreated',
-  'assignedTo { id username }', 'group { id code }', 'userCreated { id username }',
+  'resolvedAt', 'resolutionNote', 'escalatedAt', 'dateCreated', 'version',
+  'assignedTo { id username }', 'group { id uuid code }', 'userCreated { id username }',
 ];
 
 // `changes` is resolved per row (task payload or history); fine at page sizes of 10-100.
@@ -90,14 +90,43 @@ export function reactivateMember(values, label) {
 
 const MUTATION_TYPES = ['CASE_MUTATION_REQ', 'CASE_MUTATION_RESP', 'CASE_MUTATION_ERR'];
 
+const MUTATION_LOG_QUERY = (clientMutationId) => `query { mutationLogs(clientMutationId: "${clientMutationId}") `
+  + '{ edges { node { status error } } } }';
+const MUTATION_RECEIVED = 0;
+const MUTATION_POLL_ATTEMPTS = 40;
+
+const sleep = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
+
+async function waitForMutationLog(dispatch, clientMutationId) {
+  for (let attempt = 0; attempt < MUTATION_POLL_ATTEMPTS; attempt += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    const response = await dispatch(graphql(MUTATION_LOG_QUERY(clientMutationId), 'CASE_MUTATION_LOG'));
+    const log = response?.payload?.data?.mutationLogs?.edges?.[0]?.node;
+    if (response?.error || (log && log.status !== MUTATION_RECEIVED)) return log || null;
+    // eslint-disable-next-line no-await-in-loop
+    await sleep(Math.min(250 * (attempt + 1), 2000));
+  }
+  return null;
+}
+
 function runMutation(name, input, label) {
   const mutation = formatMutation(name, input, label);
-  return graphql(mutation.payload, MUTATION_TYPES, {
+  const meta = {
     actionType: ACTION_TYPE.MUTATION,
     clientMutationId: mutation.clientMutationId,
     clientMutationLabel: label,
     requestedDateTime: new Date(),
-  });
+  };
+  return async (dispatch) => {
+    dispatch({ type: MUTATION_TYPES[0], meta });
+    const sent = await dispatch(graphql(mutation.payload, 'CASE_MUTATION_SEND', meta));
+    if (sent?.error) {
+      dispatch({ type: MUTATION_TYPES[2], payload: sent.payload, meta });
+      return;
+    }
+    const log = await waitForMutationLog(dispatch, meta.clientMutationId);
+    dispatch({ type: MUTATION_TYPES[1], payload: log, meta });
+  };
 }
 
 export function updatePaymentDetails(values, label) {
@@ -220,4 +249,8 @@ export function fetchCaseSummary() {
     pendingByChannel { channel count }
   } }`;
   return graphql(payload, ACTION_TYPE.FETCH_SUMMARY);
+}
+
+export function fetchPaymentProviders() {
+  return graphql('query { casePaymentProviders { name fspCode fspType } }', ACTION_TYPE.SEARCH_PROVIDERS);
 }

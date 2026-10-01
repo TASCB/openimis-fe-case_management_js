@@ -64,7 +64,7 @@ function PendingReviewDialog({
           </Grid>
         </Grid>
 
-        <Alert severity={row.isProposal ? 'info' : 'warning'} style={{ marginTop: 12 }}>
+        <Alert severity="info" style={{ marginTop: 12 }}>
           {t(`pendingReview.explain.${kind}`)}
         </Alert>
         {summary.apply_failed && (

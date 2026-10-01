@@ -21,6 +21,9 @@ import {
 } from '../constants';
 
 const useStyles = makeStyles((theme) => ({
+  failure: {
+    display: 'flex', alignItems: 'center', justifyContent: 'flex-end', textAlign: 'right',
+  },
   page: theme.page,
   paper: theme.paper.paper,
   // Detached header card, built like fe-core's <Form> header: back chevron, title, actions.
@@ -173,7 +176,7 @@ function AccountCorrectionDetailPage({ match, history }) {
                     account.isPrimary ? t('boolean.yes') : t('boolean.no'),
                   )}
                   {/* Fills the rest of the row that Primary account starts. */}
-                  <Grid item xs={12} md={9} className={classes.item}>
+                  <Grid item xs={12} md={9} className={`${classes.item} ${classes.failure}`}>
                     <CoreError
                       error={{
                         code: attempts[0]?.result ?? 'FAILED',

@@ -1,6 +1,6 @@
 /* eslint-disable default-param-last */
 import {
-  dispatchMutationErr, dispatchMutationReq, dispatchMutationResp,
+  dispatchMutationErr, dispatchMutationReq,
   formatGraphQLError, formatServerError, pageInfo, parseData,
 } from '@openimis/fe-core';
 import { CLEAR, ERROR, REQUEST, SUCCESS } from './utils/action-type';
@@ -14,6 +14,7 @@ export const ACTION_TYPE = {
   MUTATION: 'CASE_MUTATION',
   SEARCH_AUDITS: 'CASE_AUDITS',
   SEARCH_FOLLOW_UPS: 'CASE_FOLLOW_UPS',
+  SEARCH_PROVIDERS: 'CASE_PAYMENT_PROVIDERS',
   SEARCH_ACCOUNT_CORRECTIONS: 'CASE_MANAGEMENT_ACCOUNT_CORRECTIONS',
   GET_ACCOUNT_CORRECTION: 'CASE_MANAGEMENT_ACCOUNT_CORRECTION',
   SEARCH_PENDING: 'CASE_PENDING',
@@ -24,6 +25,7 @@ export const ACTION_TYPE = {
 };
 
 const initial = {
+  paymentProviders: [],
   fetchingAudits: false, fetchedAudits: false, audits: [],
   auditsPageInfo: {}, auditsTotalCount: 0, errorAudits: null,
 
@@ -78,6 +80,8 @@ function connection(state, key, plural, action, stage) {
 
 function reducer(state = initial, action) {
   switch (action.type) {
+    case SUCCESS(ACTION_TYPE.SEARCH_PROVIDERS):
+      return { ...state, paymentProviders: action.payload?.data?.casePaymentProviders ?? [] };
     case REQUEST(ACTION_TYPE.SEARCH_AUDITS):
       return connection(state, 'casePaymentChangeAudit', 'audits', action, REQUEST);
     case SUCCESS(ACTION_TYPE.SEARCH_AUDITS):
@@ -200,7 +204,11 @@ function reducer(state = initial, action) {
     case ERROR(ACTION_TYPE.MUTATION):
       return dispatchMutationErr(state, action);
     case SUCCESS(ACTION_TYPE.MUTATION):
-      return dispatchMutationResp(state, action.meta.clientMutationId, action);
+      return {
+        ...state,
+        submittingMutation: false,
+        mutation: { ...state.mutation, status: action.payload?.status, error: action.payload?.error },
+      };
     case CLEAR(ACTION_TYPE.MUTATION):
       return { ...state, submittingMutation: false, mutation: {} };
     default:
