@@ -12,9 +12,10 @@ import {
 } from '@openimis/fe-core';
 import { decId, parseCaseError } from '../utils/errors';
 import {
-  fetchDeactivations, fetchPaymentAudits, updatePaymentDetails, updatePaymentPhone,
+  fetchCasePaymentAccount, fetchDeactivations, fetchPaymentAudits, updatePaymentDetails, updatePaymentPhone,
 } from '../actions';
 import PaymentChangeDialog from './PaymentChangeDialog';
+import PaymentLockChip from './PaymentLockChip';
 import PaymentPhoneDialog from './PaymentPhoneDialog';
 import {
   CASE_DEBOUNCE_TIME, CASE_DEFAULT_PAGE_SIZE, CASE_ROWS_PER_PAGE_OPTIONS, CASE_TAB_VALUE,
@@ -69,20 +70,26 @@ function CaseGroupTabPanel({
     (params) => dispatch(fetchDeactivations(params)), CASE_DEBOUNCE_TIME,
   ), []);
 
+  useEffect(() => { if (groupUuid) dispatch(fetchCasePaymentAccount(groupUuid)); }, [groupUuid]);
+
   useEffect(() => {
     if (prevSubmitting.current && !submitting) {
       dispatch(journalize(state?.mutation));
       const parsed = parseCaseError(state?.mutation);
       setError(parsed);
-      if (!parsed) { setDialog(null); setReset((k) => k + 1); }
+      if (!parsed) {
+        setDialog(null);
+        setReset((k) => k + 1);
+        if (groupUuid) dispatch(fetchCasePaymentAccount(groupUuid));
+      }
     }
   }, [submitting]);
   useEffect(() => { prevSubmitting.current = submitting; });
 
   const openDeactivation = (state?.deactivations ?? []).find((d) => d.isOpen);
-  const account = group?.paymentAccount ?? null;
+  const account = state?.caseAccount ? { ...state.caseAccount, id: state.caseAccount.uuid } : null;
 
-  const button = (right, icon, labelKey, onClick) => (rights.includes(right) ? (
+  const button = (right, icon, labelKey, onClick) => (rights.includes(right) && account ? (
     <Grid item>
       <Button startIcon={icon} onClick={onClick}>{t(labelKey)}</Button>
     </Grid>
@@ -135,6 +142,8 @@ function CaseGroupTabPanel({
           {openDeactivation
             ? `${t('state.deactivated')} — ${openDeactivation.reasonCode} (${openDeactivation.effectiveDate})`
             : t('state.active')}
+          {' '}
+          <PaymentLockChip account={account} />
         </Grid>
         <Grid item>
           <Grid container spacing={1} justifyContent="flex-end">

@@ -17,6 +17,7 @@ export const ACTION_TYPE = {
   SEARCH_PROVIDERS: 'CASE_PAYMENT_PROVIDERS',
   SEARCH_ACCOUNT_CORRECTIONS: 'CASE_MANAGEMENT_ACCOUNT_CORRECTIONS',
   GET_ACCOUNT_CORRECTION: 'CASE_MANAGEMENT_ACCOUNT_CORRECTION',
+  GET_CASE_ACCOUNT: 'CASE_PAYMENT_ACCOUNT',
   SEARCH_PENDING: 'CASE_PENDING',
   SEARCH_DEACTIVATIONS: 'CASE_DEACTIVATIONS',
   SEARCH_MEMBERS: 'CASE_MEMBERS',
@@ -25,6 +26,7 @@ export const ACTION_TYPE = {
 };
 
 const initial = {
+  caseAccount: null,
   paymentProviders: [],
   fetchingAudits: false, fetchedAudits: false, audits: [],
   auditsPageInfo: {}, auditsTotalCount: 0, errorAudits: null,
@@ -138,6 +140,10 @@ function reducer(state = initial, action) {
 
       };
 
+    case REQUEST(ACTION_TYPE.GET_CASE_ACCOUNT):
+      return { ...state, caseAccount: null };
+    case SUCCESS(ACTION_TYPE.GET_CASE_ACCOUNT):
+      return { ...state, caseAccount: action.payload?.data?.casePaymentAccount ?? null };
     case REQUEST(ACTION_TYPE.GET_ACCOUNT_CORRECTION):
       return {
         ...state, fetchingAccountCorrection: true, fetchedAccountCorrection: false,

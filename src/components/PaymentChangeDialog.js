@@ -5,7 +5,9 @@ import {
   Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid,
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
-import { formatMessage, SelectInput, TextInput } from '@openimis/fe-core';
+import {
+  formatMessage, formatMessageWithValues, SelectInput, TextInput,
+} from '@openimis/fe-core';
 import { fetchPaymentProviders } from '../actions';
 import {
   CASE_DIALOG_MAX_WIDTH, FSP_TYPES, MATERIAL_PAYMENT_FIELDS, MODULE_NAME,
@@ -107,6 +109,12 @@ function PaymentChangeDialog({
     <Dialog open={open} onClose={onClose} fullWidth maxWidth={CASE_DIALOG_MAX_WIDTH}>
       <DialogTitle>{t('paymentChange.title')}</DialogTitle>
       <DialogContent>
+        {account?.paymentInFlight && <Alert severity="warning">{t('lock.inFlight.dialog')}</Alert>}
+        {!account?.paymentInFlight && account?.paidAt && (
+          <Alert severity="info">
+            {formatMessageWithValues(intl, MODULE_NAME, 'lock.paid.dialog', { date: account.paidAt.slice(0, 10) })}
+          </Alert>
+        )}
         {isMaterial && <Alert severity="info">{t('paymentChange.materialWarning')}</Alert>}
         <Grid container spacing={2}>
           {FIELDS.map((field) => (
@@ -145,7 +153,7 @@ function PaymentChangeDialog({
         <Button
           onClick={submit}
           color="primary"
-          disabled={!changed.length || reasonMissing || textMissing}
+          disabled={!changed.length || reasonMissing || textMissing || !!account?.paymentInFlight}
         >
           {t('dialog.save')}
         </Button>

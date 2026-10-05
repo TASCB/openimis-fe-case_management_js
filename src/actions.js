@@ -223,9 +223,14 @@ export const ACCOUNT_CORRECTION_PROJECTION = () => [
 export const ACCOUNT_CORRECTION_DETAIL_PROJECTION = () => [
   'id', 'uuid', 'hhid', 'recipientName', 'accountNumber', 'accountName',
   'fspName', 'fspType', 'failureReason', 'locationName',
-  'contactPhone', 'isPrimary', 'preAuditStatus', 'version',
+  'contactPhone', 'isPrimary', 'preAuditStatus', 'version', 'paidAt', 'paymentInFlight',
   'verificationAttempts { museReference verificationType result failureReason receivedAt }',
 ];
+
+export function fetchCasePaymentAccount(groupUuid) {
+  const fields = 'id uuid accountNumber accountName fspName fspType contactPhone isPrimary version paidAt paymentInFlight';
+  return graphql(`query { casePaymentAccount(groupId: "${groupUuid}") { ${fields} } }`, ACTION_TYPE.GET_CASE_ACCOUNT);
+}
 
 export function fetchAccountCorrection(uuid) {
   return graphql(

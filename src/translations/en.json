@@ -457,5 +457,11 @@
   "caseManagement.paymentPhone.savedAs": "Will be saved as",
   "caseManagement.followUp.update": "Update",
   "caseManagement.followUp.view": "View",
-  "caseManagement.emptyLabel": " "
+  "caseManagement.emptyLabel": " ",
+  "caseManagement.lock.paid": "Locked · paid on {date}",
+  "caseManagement.lock.paid.help": "This account has received a payment. Its account number, provider, channel and name can only change here, with a reason and a second person's approval.",
+  "caseManagement.lock.paid.dialog": "This account was paid on {date}, so it is locked: changes to where money is sent need a reason and a second person's approval.",
+  "caseManagement.lock.inFlight": "Payment in progress",
+  "caseManagement.lock.inFlight.help": "A payment to this account is on a paylist that has not finished. Payment details can be changed once it has.",
+  "caseManagement.lock.inFlight.dialog": "A payment to this account is still in progress. Its payment details can be changed once that payment has finished."
 }

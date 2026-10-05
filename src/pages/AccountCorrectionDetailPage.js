@@ -12,6 +12,7 @@ import {
 } from '@openimis/fe-core';
 
 import PaymentChangeDialog from '../components/PaymentChangeDialog';
+import PaymentLockChip from '../components/PaymentLockChip';
 import PaymentPhoneDialog from '../components/PaymentPhoneDialog';
 import { parseCaseError } from '../utils/errors';
 import { fetchAccountCorrection, updatePaymentDetails, updatePaymentPhone } from '../actions';
@@ -117,6 +118,7 @@ function AccountCorrectionDetailPage({ match, history }) {
                 <Typography variant="h6">
                   {account.recipientName || t('accountCorrections.noName')}
                 </Typography>
+                <PaymentLockChip account={account} />
               </div>
               <div className={classes.headerActions}>
                 <span className={classes.paperHeaderAction}>
