@@ -246,6 +246,20 @@ export function fetchAccountCorrections(params) {
   );
 }
 
+const HOUSEHOLD_WITHOUT_ACCOUNT_PROJECTION = () => [
+  'id', 'groupId', 'hhid', 'recipientName', 'locationName', 'benefitPlanName', 'waitingForApproval',
+];
+
+const NO_ACCOUNT_ARGS = ['first', 'last', 'after', 'before', 'offset', 'orderBy', 'hhid', 'locationId'];
+
+export function fetchHouseholdsWithoutAccount(params) {
+  const supported = params.filter((p) => NO_ACCOUNT_ARGS.includes(p.split(':')[0].trim()));
+  return graphql(
+    formatPageQueryWithCount('caseHouseholdWithoutAccount', supported, HOUSEHOLD_WITHOUT_ACCOUNT_PROJECTION()),
+    ACTION_TYPE.SEARCH_HOUSEHOLDS_WITHOUT_ACCOUNT,
+  );
+}
+
 export function fetchCaseSummary() {
   const payload = `query { caseManagementSummary {
     openCorrections openFollowUps overdueFollowUps pendingUpdates

@@ -16,6 +16,7 @@ export const ACTION_TYPE = {
   SEARCH_FOLLOW_UPS: 'CASE_FOLLOW_UPS',
   SEARCH_PROVIDERS: 'CASE_PAYMENT_PROVIDERS',
   SEARCH_ACCOUNT_CORRECTIONS: 'CASE_MANAGEMENT_ACCOUNT_CORRECTIONS',
+  SEARCH_HOUSEHOLDS_WITHOUT_ACCOUNT: 'CASE_MANAGEMENT_HOUSEHOLDS_WITHOUT_ACCOUNT',
   GET_ACCOUNT_CORRECTION: 'CASE_MANAGEMENT_ACCOUNT_CORRECTION',
   GET_CASE_ACCOUNT: 'CASE_PAYMENT_ACCOUNT',
   SEARCH_PENDING: 'CASE_PENDING',
@@ -41,6 +42,13 @@ const initial = {
   accountCorrectionsPageInfo: {},
   accountCorrectionsTotalCount: 0,
   errorAccountCorrections: null,
+
+  fetchingNoAccount: false,
+  fetchedNoAccount: false,
+  noAccount: [],
+  noAccountPageInfo: {},
+  noAccountTotalCount: 0,
+  errorNoAccount: null,
 
   fetchingAccountCorrection: false,
   fetchedAccountCorrection: false,
@@ -139,6 +147,23 @@ function reducer(state = initial, action) {
         errorAccountCorrections: formatGraphQLError(action.payload),
 
       };
+
+    case REQUEST(ACTION_TYPE.SEARCH_HOUSEHOLDS_WITHOUT_ACCOUNT):
+      return {
+        ...state, fetchingNoAccount: true, fetchedNoAccount: false, noAccount: [], errorNoAccount: null,
+      };
+    case SUCCESS(ACTION_TYPE.SEARCH_HOUSEHOLDS_WITHOUT_ACCOUNT):
+      return {
+        ...state,
+        fetchingNoAccount: false,
+        fetchedNoAccount: true,
+        noAccount: parseData(action.payload.data.caseHouseholdWithoutAccount),
+        noAccountPageInfo: pageInfo(action.payload.data.caseHouseholdWithoutAccount),
+        noAccountTotalCount: action.payload.data.caseHouseholdWithoutAccount?.totalCount ?? 0,
+        errorNoAccount: formatGraphQLError(action.payload),
+      };
+    case ERROR(ACTION_TYPE.SEARCH_HOUSEHOLDS_WITHOUT_ACCOUNT):
+      return { ...state, fetchingNoAccount: false, errorNoAccount: formatServerError(action.payload) };
 
     case REQUEST(ACTION_TYPE.GET_CASE_ACCOUNT):
       return { ...state, caseAccount: null };
