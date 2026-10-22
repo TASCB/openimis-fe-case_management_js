@@ -8,7 +8,8 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {
-  Error as CoreError, formatMessage, Helmet, journalize, ProgressOrError, TextInput,
+  Error as CoreError, formatDateTimeFromISO, formatMessage, formatMessageWithValues, Helmet, journalize,
+  ProgressOrError, TextInput, useModulesManager,
 } from '@openimis/fe-core';
 
 import PaymentChangeDialog from '../components/PaymentChangeDialog';
@@ -18,8 +19,23 @@ import { parseCaseError } from '../utils/errors';
 import { fetchAccountCorrection, updatePaymentDetails, updatePaymentPhone } from '../actions';
 import {
   MODULE_NAME, RIGHT_ACCOUNT_CORRECTION_SEARCH, RIGHT_PAYMENT_CHANGE_UPDATE,
-  RIGHT_PAYMENT_PHONE_UPDATE, ROUTE_CASE_ACCOUNT_CORRECTIONS,
+  RIGHT_PAYMENT_PHONE_UPDATE, ROUTE_CASE_ACCOUNT_CORRECTIONS, ROUTE_CASE_PENDING,
 } from '../constants';
+
+const CHANGE_LABELS = {
+  account_number: 'accountCorrections.accountNumber',
+  account_name: 'accountCorrection.accountName',
+  fsp_name: 'accountCorrections.fsp',
+  fsp_type: 'accountCorrections.fspType',
+  is_primary: 'accountCorrection.isPrimary',
+  contact_phone: 'accountCorrection.contactPhone',
+};
+
+const parseJson = (value) => {
+  if (!value) return {};
+  if (typeof value !== 'string') return value;
+  try { return JSON.parse(value); } catch (e) { return {}; }
+};
 
 const useStyles = makeStyles((theme) => ({
   failure: {
@@ -44,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
   paperHeaderAction: theme.paper.action,
   item: theme.paper.item,
   tableTitle: theme.table.title,
+  submitted: { fontWeight: 500, color: theme.palette.primary.main },
   bigAvatar: theme.bigAvatar,   // 160x160, the insuree profile's own token
 }));
 
@@ -61,6 +78,8 @@ function AccountCorrectionDetailPage({ match, history }) {
 
   const [dialog, setDialog] = useState(null);
   const [error, setError] = useState(null);
+  const [justSubmitted, setJustSubmitted] = useState(false);
+  const modulesManager = useModulesManager();
   const prevSubmitting = useRef(submitting);
 
   const load = useCallback(() => dispatch(fetchAccountCorrection(uuid)), [dispatch, uuid]);
@@ -73,7 +92,7 @@ function AccountCorrectionDetailPage({ match, history }) {
       dispatch(journalize(mutation));
       const parsed = parseCaseError(mutation);
       setError(parsed);
-      if (!parsed) { setDialog(null); load(); }
+      if (!parsed) { setJustSubmitted(dialog === 'payment'); setDialog(null); load(); }
     }
     prevSubmitting.current = submitting;
   }, [submitting]);
@@ -85,6 +104,14 @@ function AccountCorrectionDetailPage({ match, history }) {
   // UUID. `uuid` is exposed for exactly this; the decoded relay id is only a fallback.
   const account = record ? { ...record, id: record.uuid ?? record.id } : null;
   const attempts = account?.verificationAttempts ?? [];
+  const pending = account?.pendingChange;
+  const pendingFields = parseJson(pending?.fields);
+  const pendingPrevious = parseJson(pending?.previous);
+  const shown = (key, value) => {
+    if (value === true || value === false) return t(value ? 'boolean.yes' : 'boolean.no');
+    if (key === 'fsp_type' && value) return t(`accountCorrections.fspType.${value}`);
+    return value || '-';
+  };
 
   const field = (label, value) => (
     <Grid item xs={3} className={classes.item}>
@@ -144,6 +171,55 @@ function AccountCorrectionDetailPage({ match, history }) {
               </div>
             </div>
           </Paper>
+
+          {pending && (
+            <Paper className={classes.paper}>
+              <Typography className={classes.tableTitle}>
+                {t('accountCorrection.pending.title')}
+              </Typography>
+              <Divider />
+              <Grid container className={classes.item}>
+                {justSubmitted && (
+                  <Grid item xs={12} className={classes.item}>
+                    <Typography className={classes.submitted}>{t('accountCorrection.pending.submitted')}</Typography>
+                  </Grid>
+                )}
+                <Grid item xs={12} className={classes.item}>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>{t('accountCorrection.pending.field')}</TableCell>
+                        <TableCell>{t('accountCorrection.pending.now')}</TableCell>
+                        <TableCell>{t('accountCorrection.pending.after')}</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {Object.keys(pendingFields).map((key) => (
+                        <TableRow key={key}>
+                          <TableCell>{CHANGE_LABELS[key] ? t(CHANGE_LABELS[key]) : key}</TableCell>
+                          <TableCell>{shown(key, pendingPrevious[key])}</TableCell>
+                          <TableCell>{shown(key, pendingFields[key])}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Grid>
+                <Grid item xs={12} sm={9} className={classes.item}>
+                  <Typography>
+                    {formatMessageWithValues(intl, MODULE_NAME, 'accountCorrection.pending.note', {
+                      user: pending.submittedBy || '-',
+                      date: formatDateTimeFromISO(modulesManager, intl, pending.submittedAt),
+                    })}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={3} className={`${classes.item} ${classes.failure}`}>
+                  <Button variant="outlined" color="primary" onClick={() => history.push(`/${ROUTE_CASE_PENDING}`)}>
+                    {t('accountCorrection.pending.open')}
+                  </Button>
+                </Grid>
+              </Grid>
+            </Paper>
+          )}
 
           <Paper className={classes.paper}>
             <Typography className={classes.tableTitle}>

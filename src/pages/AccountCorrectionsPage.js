@@ -104,6 +104,7 @@ function AccountCorrectionsPage({ history }) {
     (row) => <span className={classes.mono}>{row.accountNumber ?? '-'}</span>,
     (row) => (
       <>
+        {row.waitingForApproval && <Chip size="small" color="primary" className={classes.channel} label={t('accountCorrections.changeWaiting')} style={{ marginRight: 8 }} />}
         {row.withdrawn && <Chip size="small" className={classes.channel} label={t('accountCorrections.notSent')} style={{ marginRight: 8 }} />}
         <span className={classes.reason}>{row.failureReason ?? t('accountCorrections.noReason')}</span>
       </>
