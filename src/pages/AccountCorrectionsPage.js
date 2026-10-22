@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl';
 import { Chip, Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  formatMessage, formatMessageWithValues, Helmet, historyPush, Searcher, useModulesManager,
+  formatDateTimeFromISO, formatMessage, formatMessageWithValues, Helmet, historyPush, Searcher, useModulesManager,
 } from '@openimis/fe-core';
 
 import { fetchAccountCorrections, fetchHouseholdsWithoutAccount } from '../actions';
@@ -22,6 +22,8 @@ const useStyles = makeStyles((theme) => ({
   channel: { fontSize: '0.7rem', height: 20 },
 }));
 
+const FILTERS_KEY = 'caseManagementAccountCorrections';
+
 function AccountCorrectionsPage({ history }) {
   const classes = useStyles();
   const intl = useIntl();
@@ -30,15 +32,25 @@ function AccountCorrectionsPage({ history }) {
   const rights = useSelector((s) => s.core?.user?.i_user?.rights ?? []);
   const modulesManager = useModulesManager();
   const [noAccount, setNoAccount] = useState(false);
+  const linkedReason = new URLSearchParams(history?.location?.search ?? '').get('reason');
+  const [ready, setReady] = useState(!linkedReason);
+  useEffect(() => {
+    if (!linkedReason) return;
+    dispatch({
+      type: 'CORE_CACHE_FILTER',
+      payload: { [FILTERS_KEY]: { reason: { value: linkedReason, filter: `reason: "${linkedReason}"` } } },
+    });
+    history.replace(history.location.pathname);
+    setReady(true);
+  }, []);
 
   const fetch = useCallback((params) => {
     const wantsNoAccount = params.some((p) => p === `reason: "${REASON_NO_ACCOUNT}"`);
     setNoAccount(wantsNoAccount);
     return dispatch(wantsNoAccount ? fetchHouseholdsWithoutAccount(params) : fetchAccountCorrections(params));
   }, [dispatch]);
-  useEffect(() => { fetch([]); }, []);
 
-  if (!rights.includes(RIGHT_ACCOUNT_CORRECTION_SEARCH)) return null;
+  if (!rights.includes(RIGHT_ACCOUNT_CORRECTION_SEARCH) || !ready) return null;
 
   const t = (key) => formatMessage(intl, MODULE_NAME, key);
 
@@ -66,6 +78,7 @@ function AccountCorrectionsPage({ history }) {
     t('accountCorrections.fsp'),
     t('accountCorrections.accountNumber'),
     t('accountCorrections.reason'),
+    t('accountCorrections.failedOn'),
     t('accountCorrections.location'),
   ];
 
@@ -89,7 +102,13 @@ function AccountCorrectionsPage({ history }) {
       </>
     ),
     (row) => <span className={classes.mono}>{row.accountNumber ?? '-'}</span>,
-    (row) => <span className={classes.reason}>{row.failureReason ?? t('accountCorrections.noReason')}</span>,
+    (row) => (
+      <>
+        {row.withdrawn && <Chip size="small" className={classes.channel} label={t('accountCorrections.notSent')} style={{ marginRight: 8 }} />}
+        <span className={classes.reason}>{row.failureReason ?? t('accountCorrections.noReason')}</span>
+      </>
+    ),
+    (row) => (row.failedOn ? formatDateTimeFromISO(modulesManager, intl, row.failedOn) : '-'),
     (row) => row.locationName ?? '-',
   ];
 
@@ -111,6 +130,7 @@ function AccountCorrectionsPage({ history }) {
             : formatMessageWithValues(intl, MODULE_NAME, 'accountCorrections.results', { count: state.accountCorrectionsTotalCount ?? 0 })}
           headers={noAccount ? noAccountHeaders : headers}
           itemFormatters={noAccount ? noAccountFormatters : itemFormatters}
+          cacheFiltersKey={FILTERS_KEY}
           rowIdentifier={(row) => (noAccount ? row.id : row.uuid)}
           onDoubleClick={noAccount ? openHousehold : openCorrection}
           defaultPageSize={CASE_DEFAULT_PAGE_SIZE}

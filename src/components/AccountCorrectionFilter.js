@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import _debounce from 'lodash/debounce';
 import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  ConstantBasedPicker, ControlledField, TextInput, useModulesManager, useTranslations,
+  ConstantBasedPicker, ControlledField, SelectInput, TextInput, useModulesManager, useTranslations,
 } from '@openimis/fe-core';
 
+import { fetchPaymentProviders } from '../actions';
 import {
   ACCOUNT_CORRECTION_REASONS, CASE_DEBOUNCE_TIME, FSP_TYPES, MODULE_NAME,
 } from '../constants';
@@ -19,6 +21,9 @@ function AccountCorrectionFilter({ filters, onChangeFilters }) {
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations(MODULE_NAME, modulesManager);
+  const dispatch = useDispatch();
+  const providers = useSelector((s) => s.caseManagement?.paymentProviders ?? []);
+  useEffect(() => { if (!providers.length) dispatch(fetchPaymentProviders()); }, []);
 
   const debouncedOnChangeFilters = _debounce(onChangeFilters, CASE_DEBOUNCE_TIME);
 
@@ -70,8 +75,28 @@ function AccountCorrectionFilter({ filters, onChangeFilters }) {
         )}
       />
       {textField('hhid', 'accountCorrections.filter.hhid')}
-      {textField('recipientName', 'accountCorrections.filter.recipient')}
-      {textField('fspName', 'accountCorrections.filter.fsp', 'Icontains')}
+      <ControlledField
+        module={MODULE_NAME}
+        id="AccountCorrectionFilter.fspCode"
+        field={(
+          <Grid item xs={12} sm={6} md={2} className={classes.item}>
+            <SelectInput
+              module={MODULE_NAME}
+              label="accountCorrections.filter.fsp"
+              options={[
+                { value: null, label: formatMessage('accountCorrections.filter.anyFsp') },
+                ...providers
+                  .filter((p) => !filterValue('fspType') || p.fspType === filterValue('fspType'))
+                  .map((p) => ({ value: p.fspCode, label: p.name })),
+              ]}
+              value={filterValue('fspCode')}
+              onChange={(value) => onChangeFilters([
+                { id: 'fspCode', value, filter: value ? `fspCode: "${value}"` : '' },
+              ])}
+            />
+          </Grid>
+        )}
+      />
       {textField('accountNumber', 'accountCorrections.filter.accountNumber', 'Icontains')}
       <ControlledField
         module={MODULE_NAME}

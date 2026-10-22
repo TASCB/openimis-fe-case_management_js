@@ -215,7 +215,7 @@ export function decidePendingUpdate(values, label) {
 // Accounts that failed verification. Status-driven, so nothing has to be pushed here.
 export const ACCOUNT_CORRECTION_PROJECTION = () => [
   'id', 'uuid', 'hhid', 'recipientName', 'accountNumber', 'accountName',
-  'fspName', 'fspType', 'failureReason', 'locationName',
+  'fspName', 'fspType', 'failureReason', 'locationName', 'failedOn', 'withdrawn',
 ];
 
 // The drill-in only: verificationAttempts is a per-row subquery, so it is deliberately kept
