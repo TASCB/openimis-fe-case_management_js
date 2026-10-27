@@ -258,7 +258,12 @@ function AccountCorrectionDetailPage({ match, history }) {
                     <CoreError
                       error={{
                         code: attempts[0]?.result ?? 'FAILED',
-                        message: account.failureReason || t('accountCorrections.noReason'),
+                        message: attempts[0]?.returnedName
+                          ? formatMessageWithValues(intl, MODULE_NAME, 'accountCorrection.operatorName', {
+                            returned: attempts[0].returnedName,
+                            expected: attempts[0].expectedName || account.recipientName || '-',
+                          })
+                          : account.failureReason || t('accountCorrections.noReason'),
                       }}
                     />
                   </Grid>
@@ -285,6 +290,7 @@ function AccountCorrectionDetailPage({ match, history }) {
                     <TableCell>{t('accountCorrection.attempts.type')}</TableCell>
                     <TableCell>{t('accountCorrection.attempts.result')}</TableCell>
                     <TableCell>{t('accountCorrection.attempts.reference')}</TableCell>
+                    <TableCell>{t('accountCorrection.attempts.names')}</TableCell>
                     <TableCell>{t('accountCorrection.attempts.reason')}</TableCell>
                   </TableRow>
                 </TableHead>
@@ -295,6 +301,11 @@ function AccountCorrectionDetailPage({ match, history }) {
                       <TableCell>{a.verificationType ?? '-'}</TableCell>
                       <TableCell>{a.result ?? '-'}</TableCell>
                       <TableCell>{a.museReference ?? '-'}</TableCell>
+                      <TableCell>
+                        {a.returnedName
+                          ? `${a.expectedName || '-'} → ${a.returnedName}${a.matchScore != null ? ` (${a.matchScore}%)` : ''}`
+                          : '-'}
+                      </TableCell>
                       <TableCell>{a.failureReason ?? '-'}</TableCell>
                     </TableRow>
                   ))}

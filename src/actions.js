@@ -224,7 +224,7 @@ export const ACCOUNT_CORRECTION_DETAIL_PROJECTION = () => [
   'id', 'uuid', 'hhid', 'recipientName', 'accountNumber', 'accountName',
   'fspName', 'fspType', 'failureReason', 'locationName',
   'contactPhone', 'isPrimary', 'preAuditStatus', 'version', 'paidAt', 'paymentInFlight',
-  'verificationAttempts { museReference verificationType result failureReason receivedAt }',
+  'verificationAttempts { museReference verificationType result failureReason receivedAt expectedName returnedName matchScore }',
   'pendingChange { id submittedBy submittedAt fields previous }',
 ];
 

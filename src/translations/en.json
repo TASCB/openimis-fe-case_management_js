@@ -241,6 +241,8 @@
   "caseManagement.accountCorrection.action.editPhone": "Update phone",
   "caseManagement.accountCorrection.attempts.none": "No verification attempts recorded.",
   "caseManagement.accountCorrection.attempts.reason": "Reason",
+  "caseManagement.accountCorrection.attempts.names": "Our name → provider’s name",
+  "caseManagement.accountCorrection.operatorName": "The provider holds this account under {returned}; our record says {expected}. Check that the number belongs to this household.",
   "caseManagement.accountCorrection.attempts.received": "Received",
   "caseManagement.accountCorrection.attempts.reference": "MUSE reference",
   "caseManagement.accountCorrection.attempts.result": "Result",
