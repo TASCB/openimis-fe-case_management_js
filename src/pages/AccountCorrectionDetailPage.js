@@ -7,6 +7,8 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import CloseIcon from '@material-ui/icons/Close';
+import ErrorIcon from '@material-ui/icons/Error';
 import {
   Error as CoreError, formatDateTimeFromISO, formatMessage, formatMessageWithValues, Helmet, journalize,
   ProgressOrError, TextInput, useModulesManager,
@@ -62,6 +64,15 @@ const useStyles = makeStyles((theme) => ({
   tableTitle: theme.table.title,
   submitted: { fontWeight: 500, color: theme.palette.primary.main },
   bigAvatar: theme.bigAvatar,   // 160x160, the insuree profile's own token
+  alert: {
+    display: 'flex', alignItems: 'flex-start', gap: theme.spacing(2),
+    margin: theme.spacing(1), padding: theme.spacing(2, 3),
+    background: '#fdf1f2', border: '1px solid #f4c7cc', borderRadius: 4,
+  },
+  alertIcon: { color: theme.palette.error.main, fontSize: 44, flexShrink: 0 },
+  alertBody: { flex: 1, minWidth: 0 },
+  alertTitle: { fontWeight: 600, fontSize: '1.1rem', marginBottom: 2 },
+  alertText: { color: theme.palette.text.secondary, lineHeight: 1.7 },
 }));
 
 function AccountCorrectionDetailPage({ match, history }) {
@@ -78,6 +89,7 @@ function AccountCorrectionDetailPage({ match, history }) {
 
   const [dialog, setDialog] = useState(null);
   const [error, setError] = useState(null);
+  const [failureHidden, setFailureHidden] = useState(false);
   const [justSubmitted, setJustSubmitted] = useState(false);
   const modulesManager = useModulesManager();
   const prevSubmitting = useRef(submitting);
@@ -253,24 +265,42 @@ function AccountCorrectionDetailPage({ match, history }) {
                     'accountCorrection.isPrimary',
                     account.isPrimary ? t('boolean.yes') : t('boolean.no'),
                   )}
-                  {/* Fills the rest of the row that Primary account starts. */}
-                  <Grid item xs={12} md={9} className={`${classes.item} ${classes.failure}`}>
-                    <CoreError
-                      error={{
-                        code: attempts[0]?.result ?? 'FAILED',
-                        message: attempts[0]?.returnedName
-                          ? formatMessageWithValues(intl, MODULE_NAME, 'accountCorrection.operatorName', {
-                            returned: attempts[0].returnedName,
-                            expected: attempts[0].expectedName || account.recipientName || '-',
-                          })
-                          : account.failureReason || t('accountCorrections.noReason'),
-                      }}
-                    />
-                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
           </Paper>
+
+          {!failureHidden && (
+            <div className={classes.alert} role="alert">
+              <ErrorIcon className={classes.alertIcon} />
+              <div className={classes.alertBody}>
+                <Typography className={classes.alertTitle}>
+                  {attempts[0]?.returnedName
+                    ? formatMessageWithValues(intl, MODULE_NAME, 'accountCorrection.failure.title',
+                      { returned: attempts[0].returnedName })
+                    : t('accountCorrection.failure.titleNoName')}
+                </Typography>
+                {attempts[0]?.returnedName ? (
+                  <>
+                    <Typography className={classes.alertText}>
+                      {formatMessageWithValues(intl, MODULE_NAME, 'accountCorrection.failure.names', {
+                        returned: attempts[0].returnedName,
+                        expected: attempts[0].expectedName || account.recipientName || '-',
+                      })}
+                    </Typography>
+                    <Typography className={classes.alertText}>{t('accountCorrection.failure.check')}</Typography>
+                  </>
+                ) : (
+                  <Typography className={classes.alertText}>
+                    {account.failureReason || t('accountCorrections.noReason')}
+                  </Typography>
+                )}
+              </div>
+              <IconButton size="small" onClick={() => setFailureHidden(true)} aria-label={t('followUpDialog.close')}>
+                <CloseIcon />
+              </IconButton>
+            </div>
+          )}
 
           <Paper className={classes.paper}>
             <Typography className={classes.tableTitle}>
