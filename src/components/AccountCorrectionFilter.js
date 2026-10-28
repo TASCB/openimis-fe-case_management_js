@@ -43,7 +43,7 @@ function AccountCorrectionFilter({ filters, onChangeFilters }) {
       module={MODULE_NAME}
       id={`AccountCorrectionFilter.${id}`}
       field={(
-        <Grid item xs={12} sm={6} md={2} className={classes.item}>
+        <Grid item xs={12} sm={6} md className={classes.item}>
           <TextInput
             module={MODULE_NAME}
             label={formatMessage(label)}
@@ -61,7 +61,7 @@ function AccountCorrectionFilter({ filters, onChangeFilters }) {
         module={MODULE_NAME}
         id="AccountCorrectionFilter.reason"
         field={(
-          <Grid item xs={12} sm={6} md={2} className={classes.item}>
+          <Grid item xs={12} sm={6} md className={classes.item}>
             <ConstantBasedPicker
               module={MODULE_NAME}
               label="accountCorrections.reason"
@@ -75,11 +75,30 @@ function AccountCorrectionFilter({ filters, onChangeFilters }) {
         )}
       />
       {textField('hhid', 'accountCorrections.filter.hhid')}
+      {textField('accountNumber', 'accountCorrections.filter.accountNumber', 'Icontains')}
+      <ControlledField
+        module={MODULE_NAME}
+        id="AccountCorrectionFilter.fspType"
+        field={(
+          <Grid item xs={12} sm={6} md className={classes.item}>
+            <ConstantBasedPicker
+              module={MODULE_NAME}
+              label="accountCorrections.fspType"
+              constants={FSP_TYPES}
+              value={filterValue('fspType')}
+              onChange={(value) => onChangeFilters([
+                // fspType is a CharField: a quoted String, not an enum.
+                { id: 'fspType', value, filter: value ? `fspType: "${value}"` : '' },
+              ])}
+            />
+          </Grid>
+        )}
+      />
       <ControlledField
         module={MODULE_NAME}
         id="AccountCorrectionFilter.fspCode"
         field={(
-          <Grid item xs={12} sm={6} md={2} className={classes.item}>
+          <Grid item xs={12} sm={6} md className={classes.item}>
             <SelectInput
               module={MODULE_NAME}
               label="accountCorrections.filter.fsp"
@@ -92,25 +111,6 @@ function AccountCorrectionFilter({ filters, onChangeFilters }) {
               value={filterValue('fspCode')}
               onChange={(value) => onChangeFilters([
                 { id: 'fspCode', value, filter: value ? `fspCode: "${value}"` : '' },
-              ])}
-            />
-          </Grid>
-        )}
-      />
-      {textField('accountNumber', 'accountCorrections.filter.accountNumber', 'Icontains')}
-      <ControlledField
-        module={MODULE_NAME}
-        id="AccountCorrectionFilter.fspType"
-        field={(
-          <Grid item xs={12} sm={6} md={2} className={classes.item}>
-            <ConstantBasedPicker
-              module={MODULE_NAME}
-              label="accountCorrections.fspType"
-              constants={FSP_TYPES}
-              value={filterValue('fspType')}
-              // fspType is a plain CharField, so the argument is a quoted String, not an enum.
-              onChange={(value) => onChangeFilters([
-                { id: 'fspType', value, filter: value ? `fspType: "${value}"` : '' },
               ])}
             />
           </Grid>

@@ -13,6 +13,7 @@ import {
 const useStyles = makeStyles((theme) => ({
   form: { padding: '0 0 10px 0', width: '100%' },
   item: { padding: theme.spacing(1) },
+  checkbox: { display: 'flex', alignItems: 'flex-end' },
 }));
 
 // status / category / priority are graphene enums, so their values go unquoted.
@@ -34,7 +35,7 @@ function FollowUpFilter({ filters, onChangeFilters }) {
         module={MODULE_NAME}
         id="FollowUpFilter.household"
         field={(
-          <Grid item xs={12} sm={6} md={2} className={classes.item}>
+          <Grid item xs={12} sm={6} md className={classes.item}>
             <TextInput
               module={MODULE_NAME}
               label={formatMessage('followUpFilter.household')}
@@ -52,7 +53,7 @@ function FollowUpFilter({ filters, onChangeFilters }) {
           module={MODULE_NAME}
           id={`FollowUpFilter.${id}`}
           field={(
-            <Grid item xs={12} sm={6} md={2} className={classes.item}>
+            <Grid item xs={12} sm={6} md className={classes.item}>
               <ConstantBasedPicker
                 module={MODULE_NAME}
                 label={`followUpFilter.${id}`}
@@ -68,7 +69,7 @@ function FollowUpFilter({ filters, onChangeFilters }) {
         module={MODULE_NAME}
         id="FollowUpFilter.overdueOnly"
         field={(
-          <Grid item xs={12} sm={6} md={2} className={classes.item}>
+          <Grid item xs={12} sm={6} md className={`${classes.item} ${classes.checkbox}`}>
             <FormControlLabel
               label={formatMessage('followUpFilter.overdueOnly')}
               control={(

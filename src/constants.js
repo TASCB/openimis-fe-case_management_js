@@ -46,7 +46,7 @@ export const REASON_NO_ACCOUNT = 'NO_ACCOUNT';
 export const ROUTE_REF_GROUP = 'individual.route.group';
 
 export const PENDING_STATUSES = ['PENDING', 'APPROVED', 'REJECTED', 'CANCELLED', 'SUPERSEDED'];
-export const CHANNELS = ['MOBILE', 'WEB', 'IMPORT', 'SYSTEM'];
+export const CHANNELS = ['MOBILE', 'WEB'];
 export const SEVERITIES = ['CRITICAL', 'WARNING', 'INFO'];
 // A proposal waits in a task and changes nothing until decided; the rest were already applied.
 export const PENDING_KINDS = ['PROPOSAL', 'APPLIED'];
