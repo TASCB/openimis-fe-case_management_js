@@ -19,7 +19,7 @@ const FOLLOW_UP_PROJECTION = () => [
 const PENDING_PROJECTION = () => [
   'id', 'uuid', 'updateType', 'status', 'severity', 'summary', 'objectId', 'dateCreated',
   'isProposal', 'channel', 'changes', 'resolvedAt',
-  'submittedBy { id username }', 'group { id code }',
+  'submittedBy { id username iUser { otherNames lastName } }', 'group { id uuid code }',
 ];
 
 const DEACTIVATION_PROJECTION = () => [

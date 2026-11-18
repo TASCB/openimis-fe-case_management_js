@@ -1,16 +1,15 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
-import {
-  Button, Chip, Paper,
-} from '@material-ui/core';
+import { Button, Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import _debounce from 'lodash/debounce';
 import {
-  formatMessage, formatMessageWithValues, Helmet, journalize, Searcher,
+  formatDateTimeFromISO, formatMessage, formatMessageWithValues, Helmet, journalize, Searcher,
+  useModulesManager,
 } from '@openimis/fe-core';
 import { decidePendingUpdate, fetchPendingUpdates } from '../actions';
-import PendingReviewDialog, { fieldLabel, parseJson } from '../components/PendingReviewDialog';
+import PendingReviewDialog, { fieldLabel, parseJson, userName } from '../components/PendingReviewDialog';
 import PendingUpdateFilter from '../components/PendingUpdateFilter';
 import { parseCaseError } from '../utils/errors';
 import {
@@ -22,9 +21,9 @@ const useStyles = makeStyles((theme) => ({
   page: { ...theme.page },
   paper: theme.paper.paper,
   failed: { color: theme.palette.error.main },
+  kind: { display: 'block', fontSize: '0.75rem', color: theme.palette.text.secondary },
+  critical: { color: theme.palette.error.main },
 }));
-
-const SEVERITY_COLOR = { CRITICAL: 'secondary', WARNING: 'primary', INFO: 'default' };
 
 // The decider (TMO) works the PENDING queue; everyone else can clear the filter to follow the
 // whole cycle, e.g. a PAAF checking what happened to a submission.
@@ -32,6 +31,7 @@ const DEFAULT_FILTERS = { status: { value: 'PENDING', filter: 'status: PENDING' 
 
 function PendingUpdatesPage() {
   const intl = useIntl();
+  const modulesManager = useModulesManager();
   const classes = useStyles();
   const dispatch = useDispatch();
   const state = useSelector((s) => s.caseManagement);
@@ -47,7 +47,7 @@ function PendingUpdatesPage() {
   const summaryText = (row) => {
     const s = parseJson(row.summary) ?? {};
     const parts = [];
-    if (s.fields?.length) parts.push(s.fields.map(fieldLabel).join(', '));
+    if (s.fields?.length) parts.push(s.fields.map((f) => fieldLabel(intl, f)).join(', '));
     if (s.change_type) parts.push(t(`changeType.${s.change_type}`));
     if (s.reason_code) parts.push(t(`reasonCode.${s.reason_code}`));
     if (s.decision_note) parts.push(s.decision_note);
@@ -79,22 +79,29 @@ function PendingUpdatesPage() {
   ));
 
   const headers = () => [
-    'pending.household', 'pending.type', 'pending.kind', 'pending.severity', 'pending.channel',
-    'pending.status', 'pending.submittedBy', 'pending.date', 'pending.summary', 'emptyLabel',
+    'pending.household', 'pending.type', 'pending.summary', 'pending.submittedBy', 'pending.date',
+    'pending.status', 'emptyLabel',
   ];
 
   const itemFormatters = () => [
     (r) => r.group?.code ?? '—',
-    (r) => t(`updateType.${r.updateType}`),
-    (r) => t(`pending.kind.${r.isProposal ? 'PROPOSAL' : 'APPLIED'}`),
-    (r) => <Chip size="small" label={t(`pending.severity.${r.severity}`)} color={SEVERITY_COLOR[r.severity]} />,
-    (r) => t(`pending.channel.${r.channel ?? 'null'}`),
-    (r) => t(`pending.status.${r.status}`),
-    (r) => r.submittedBy?.username,
-    (r) => r.dateCreated?.slice(0, 10),
+    (r) => (
+      <>
+        {t(`updateType.${r.updateType}`)}
+        <span className={classes.kind}>
+          {t(`pending.kind.${r.isProposal ? 'PROPOSAL' : 'APPLIED'}`)}
+          {r.severity === 'CRITICAL' && (
+            <span className={classes.critical}>{` · ${t('pending.severity.CRITICAL')}`}</span>
+          )}
+        </span>
+      </>
+    ),
     (r) => (parseJson(r.summary)?.apply_failed
       ? <span className={classes.failed}>{`${t('pending.notApplied')} — ${summaryText(r)}`}</span>
       : summaryText(r)),
+    (r) => userName(r.submittedBy) || '—',
+    (r) => (r.dateCreated ? formatDateTimeFromISO(modulesManager, intl, r.dateCreated) : '—'),
+    (r) => t(`pending.status.${r.status}`),
     (r) => (
       <Button size="small" color="primary" onClick={() => open(r)}>
         {t(canDecide && r.status === 'PENDING' ? 'pending.review' : 'pending.view')}
