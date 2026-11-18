@@ -510,5 +510,8 @@
   "caseManagement.value.MOBILE": "Mobile money",
   "caseManagement.value.BANK": "Bank",
   "caseManagement.value.true": "Yes",
-  "caseManagement.value.false": "No"
+  "caseManagement.value.false": "No",
+  "caseManagement.pending.filter.hhid": "HHID",
+  "caseManagement.pending.filter.dateFrom": "Submitted from",
+  "caseManagement.pending.filter.dateTo": "Submitted to"
 }
