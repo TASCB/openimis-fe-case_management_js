@@ -88,19 +88,7 @@ function AccountCorrectionsPage({ history }) {
   const itemFormatters = () => [
     (row) => row.hhid ?? '-',
     (row) => row.recipientName ?? '-',
-    (row) => (
-      <>
-        {row.fspName ?? '-'}
-        {row.fspType && (
-          <Chip
-            size="small"
-            className={classes.channel}
-            label={t(`accountCorrections.fspType.${row.fspType}`)}
-            style={{ marginLeft: 8 }}
-          />
-        )}
-      </>
-    ),
+    (row) => row.fspName ?? '-',
     (row) => <span className={classes.mono}>{row.accountNumber ?? '-'}</span>,
     (row) => (
       <>
