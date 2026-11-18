@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1), padding: theme.spacing(2, 3),
     background: '#fdf1f2', border: '1px solid #f4c7cc', borderRadius: 4,
   },
-  alertIcon: { color: theme.palette.error.main, fontSize: 44, flexShrink: 0 },
+  alertIcon: { color: theme.palette.error.main, flexShrink: 0, '&&': { fontSize: 44 } },
   alertBody: { flex: 1, minWidth: 0 },
   alertTitle: { fontWeight: 600, fontSize: '1.1rem', marginBottom: 2 },
   alertText: { color: theme.palette.text.secondary, lineHeight: 1.7 },
