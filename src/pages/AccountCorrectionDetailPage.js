@@ -5,7 +5,7 @@ import {
   Avatar, Button, Divider, Grid, IconButton, Paper, Table, TableBody, TableCell, TableHead, TableRow,
   Tooltip, Typography,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { fade, makeStyles } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import CloseIcon from '@material-ui/icons/Close';
 import ErrorIcon from '@material-ui/icons/Error';
@@ -67,7 +67,9 @@ const useStyles = makeStyles((theme) => ({
   alert: {
     display: 'flex', alignItems: 'flex-start', gap: theme.spacing(2),
     margin: theme.spacing(1), padding: theme.spacing(2, 3),
-    background: '#fdf1f2', border: '1px solid #f4c7cc', borderRadius: 4,
+    background: fade(theme.palette.error.main, 0.05),
+    border: `1px solid ${fade(theme.palette.error.main, 0.3)}`,
+    borderRadius: 4,
   },
   alertIcon: { color: theme.palette.error.main, flexShrink: 0, '&&': { fontSize: 44 } },
   alertBody: { flex: 1, minWidth: 0 },

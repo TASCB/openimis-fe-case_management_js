@@ -83,8 +83,8 @@ const useStyles = makeStyles((theme) => {
     factValue: { fontSize: 14, color: PREVIEW_INK, fontWeight: 600, wordBreak: 'break-word' },
     factSub: { fontSize: 12.5, opacity: 0.75 },
     quote: {
-      padding: '12px 16px', borderLeft: `3px solid ${teal}`, background: PREVIEW_PANEL,
-      borderRadius: '0 10px 10px 0', whiteSpace: 'pre-wrap',
+      padding: '12px 16px', border: `1px solid ${theme.palette.divider}`, background: PREVIEW_PANEL,
+      borderRadius: 10, whiteSpace: 'pre-wrap',
     },
     after: { fontWeight: 700 },
     alert: { marginTop: 12 },
